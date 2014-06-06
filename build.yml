@@ -4,8 +4,6 @@
   description: "Project for bee package bee_go"
   alias:
     release:
-    - clean
-    - gem
     - push
     - tag
 
