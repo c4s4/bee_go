@@ -76,7 +76,7 @@
   - if: "`git diff origin/master`.length > 0"
     then:
     - error: 'There are uncommited changes'
-  - print: "Tagging project '#{cvs_tag}'"
+  - print: "Tagging project 'RELEASE-#{version}'"
   - "git tag -a 'RELEASE-#{version}' -m 'Release #{version}'"
   - "git push --tags"
 
