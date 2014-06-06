@@ -17,8 +17,8 @@
     summary:      "Go package for Bee"
     description:  "Bee package to manage Go projects"
     email:        "michel.casabianca@gmail.com"
-    homepage:     "http://bee_go.rubyforge.org"
-    rubyforge:    ""
+    homepage:     "http://bee.rubyforge.org"
+    rubyforge:    "bee"
     dependencies:
       "bee": [">= 0.11.3"]
     lib_dir:      "lib"
