@@ -1,0 +1,10 @@
+- release:     0.0.2
+  date:        2014-06-06
+  description: "Bugfix release"
+  fixed:
+  - "Fixed bin target."
+
+- release:     0.0.1
+  date:        2014-06-06
+  description: "First public release"
+

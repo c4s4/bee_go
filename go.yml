@@ -19,7 +19,7 @@
     go_src_dir:      "src"
     go_lib_dir:      "lib"
     go_lib_pkg_dir:  "#{go_lib_dir}/pkg"
-    go_main:         "#{go_src_dir}/#{go_package}/main.go"
+    go_main:         "#{go_src_dir}/#{go_package}/#{name}/main.go"
     go_args:         ""
     # test coverage mode:
     # - set: indicates which statement was run
@@ -58,7 +58,7 @@
   script:
   - mkdir: :go_build_dir
   - for: _dir
-    in:  'Dir.glob("#{go_src_dir}/#{go_package}/*").select{|f| File.directory? f}'
+    in:  'Dir.glob("#{go_src_dir}/#{go_package}/#{name}/*").select{|f| File.directory? f}'
     do:
     - rb: '_pkg = _dir[go_src_dir.length+1..-1]'
     - "go test -covermode=#{go_cover_mode} -coverprofile=#{go_build_dir}/coverage.out #{_pkg} > /dev/null"
@@ -87,3 +87,4 @@
   - rm:    :go_clean_files
   - mkdir: :go_pkg_dir
   - mkdir: :go_lib_pkg_dir
+
