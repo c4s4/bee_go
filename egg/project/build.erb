@@ -1,0 +1,10 @@
+- build:       <%= name %>
+  description: "Go project"
+  extends:
+  - ":go:go.yml"
+
+- properties:
+    name:       "<%= name %>"
+    version:    "0.0.1"
+    go_package: "<%= package %>"
+

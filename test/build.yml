@@ -1,0 +1,16 @@
+- build: package_test
+  default: all
+  description: Build file to test generated and installed package
+
+- target: task
+  description: Test task for generated package
+  script:
+  - go.hello: "World"
+
+- target: egg
+  description: Test egg for generated package
+  script:
+  - "bee -t 'go.hello'"
+
+- target: all
+  depends: [task, egg]

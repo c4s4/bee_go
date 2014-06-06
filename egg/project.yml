@@ -1,0 +1,63 @@
+- build:       go_template
+  default:     all
+  description: "Generate a Go project"
+
+- properties:
+    name:        "project"
+    package:     "github.com/user"
+    description: "This script will create a Go project."
+
+- target:      welcome
+  description: "Print information message"
+  script:
+  - print: :description
+
+- target:      prompt
+  depends:     welcome
+  description: "Prompt for project information"
+  script:
+  - print: "Please answer following questions to generate the project:"
+  - prompt:
+      message:  "What is the project's name?"
+      default:  :name
+      property: name
+  - prompt:
+      message:  "What is the project root package?"
+      default:  :package
+      property: package
+
+- target:      generate
+  depends:     prompt
+  description: "Generate project"
+  script:
+  - print: "Generating project..."
+  - rb: |
+      error "A directory named '#{name}' already exists, aborting" if
+        File.exists?("#{here}/#{name}")
+  - mkdir: "#{here}/#{name}"
+  - mkdir: "#{here}/#{name}/bin"
+  - mkdir: "#{here}/#{name}/pkg"
+  - mkdir: "#{here}/#{name}/lib"
+  - mkdir: "#{here}/#{name}/src/#{package}/#{name}"
+  - erb:
+      src:  "#{base}/project/build.erb"
+      dest: "#{here}/#{name}/build.yml"
+  - cp:
+      src:  "#{base}/project/*.go"
+      dest: "#{here}/#{name}/src/#{package}/#{name}/"
+  - cp:
+      src:  "#{base}/project/goactivate"
+      dest: "#{here}/#{name}/"
+
+
+- target: customization
+  depends: generate
+  description: "Print information about project customization"
+  script:
+  - print: |
+      Project has been generated in directory '#{name}'. Type 'bee -b'
+      to print information about generated build file. Enjoy!
+
+- target: all
+  depends: [welcome, prompt, generate, customization]
+

@@ -1,0 +1,89 @@
+- build:       go
+  description: Parent build file for GO projects
+  alias:
+    bin:   go_bin
+    run:   go_run
+    test:  go_test
+    cover: go_cover
+    clean: go_clean
+  default:
+  - go_clean
+  - go_test
+
+- properties:
+    name:            ~
+    go_package:      ~
+    go_build_dir:    "build"
+    go_pkg_dir:      "pkg"
+    go_bin_dir:      "bin"
+    go_src_dir:      "src"
+    go_lib_dir:      "lib"
+    go_lib_pkg_dir:  "#{go_lib_dir}/pkg"
+    go_main:         "#{go_src_dir}/#{go_package}/main.go"
+    go_args:         ""
+    # test coverage mode:
+    # - set: indicates which statement was run
+    # - count: counts the numbers of runs on a statement
+    # - atomic: precise count (for parallel algorithms)
+    go_cover_mode:   "set"
+    go_clean_dirs:
+    - :go_build_dir
+    - :go_pkg_dir
+    - :go_lib_pkg_dir
+    go_clean_files:
+    - "#{go_bin_dir}/#{name}"
+
+- target:      go_bin
+  depends:     go_clean
+  description: Make binary executable
+  script:
+  - print: "Building project #{name}..."
+  - "go build -o #{go_bin_dir}/#{name} #{go_main}"
+
+- target:      go_run
+  depends:     go_bin
+  description: Run main executable
+  script:
+  - "#{go_bin_dir}/#{name} #{go_args}"
+
+- target:      go_test
+  depends:     go_env
+  description: Run unit tests
+  script:
+  - "go test #{go_package}/..."
+
+- target:      go_cover
+  depends:     go_clean
+  description: Generate coverage report
+  script:
+  - mkdir: :go_build_dir
+  - for: _dir
+    in:  'Dir.glob("#{go_src_dir}/#{go_package}/*").select{|f| File.directory? f}'
+    do:
+    - rb: '_pkg = _dir[go_src_dir.length+1..-1]'
+    - "go test -covermode=#{go_cover_mode} -coverprofile=#{go_build_dir}/coverage.out #{_pkg} > /dev/null"
+  - "go tool cover -html=#{go_build_dir}/coverage.out -o #{go_build_dir}/coverage.html"
+  - "go tool cover -func=#{go_build_dir}/coverage.out"
+  - print: "Test coverage report generated in file '#{go_build_dir}/coverage.html'"
+
+- target:      go_doc
+  description: Generate code documentation
+  script:
+  - "godoc #{go_package}"
+
+- target:      go_env
+  description: Check that we are running in virtualenv
+  script:
+  - if: "ENV['VIRTUAL_ENV'] != base"
+    then:
+    - raise: "You are not running in the project's Virtualenv, aborting"
+    else:
+    - print: "You are running in the project's Virtualenv, please proceed"
+
+- target:      go_clean
+  description: Clean generated files
+  script:
+  - rmdir: :go_clean_dirs
+  - rm:    :go_clean_files
+  - mkdir: :go_pkg_dir
+  - mkdir: :go_lib_pkg_dir
