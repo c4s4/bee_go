@@ -10,7 +10,7 @@
 # Build properties
 - properties:
     name:         "bee_go"
-    version:      "0.0.2"
+    version:      "0.0.3"
     author:       "Michel Casabianca"
     years:        "2014"
     platform:     "Gem::Platform::RUBY"
