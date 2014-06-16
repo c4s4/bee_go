@@ -17,8 +17,6 @@
     go_pkg_dir:      "pkg"
     go_bin_dir:      "bin"
     go_src_dir:      "src"
-    go_lib_dir:      "lib"
-    go_lib_pkg_dir:  "#{go_lib_dir}/pkg"
     go_main:         "#{go_src_dir}/#{go_package}/#{name}/main.go"
     go_args:         ""
     # test coverage mode:
@@ -29,7 +27,6 @@
     go_clean_dirs:
     - :go_build_dir
     - :go_pkg_dir
-    - :go_lib_pkg_dir
     go_clean_files:
     - "#{go_bin_dir}/#{name}"
 
@@ -57,8 +54,9 @@
   description: Generate coverage report
   script:
   - mkdir: :go_build_dir
+  - "go test -covermode=#{go_cover_mode} -coverprofile=#{go_build_dir}/coverage.out #{go_package}/#{name} > /dev/null"
   - for: _dir
-    in:  'Dir.glob("#{go_src_dir}/#{go_package}/#{name}/*").select{|f| File.directory? f}'
+    in:  'Dir.glob("#{go_src_dir}/#{go_package}/#{name}/**/*").select{|f| File.directory? f}'
     do:
     - rb: '_pkg = _dir[go_src_dir.length+1..-1]'
     - "go test -covermode=#{go_cover_mode} -coverprofile=#{go_build_dir}/coverage.out #{_pkg} > /dev/null"
@@ -86,5 +84,4 @@
   - rmdir: :go_clean_dirs
   - rm:    :go_clean_files
   - mkdir: :go_pkg_dir
-  - mkdir: :go_lib_pkg_dir
 

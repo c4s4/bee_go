@@ -1,3 +1,10 @@
+- release:     0.0.3
+  date:        2014-06-16
+  description: "Removed lib directory"
+  fixed:
+  - "Removed lib/ directory, library sources are in source tree."
+  - "Fixed cover target for root directory"
+
 - release:     0.0.2
   date:        2014-06-06
   description: "Bugfix release"

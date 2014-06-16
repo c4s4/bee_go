@@ -37,7 +37,6 @@
   - mkdir: "#{here}/#{name}"
   - mkdir: "#{here}/#{name}/bin"
   - mkdir: "#{here}/#{name}/pkg"
-  - mkdir: "#{here}/#{name}/lib"
   - mkdir: "#{here}/#{name}/src/#{package}/#{name}"
   - erb:
       src:  "#{base}/project/build.erb"
