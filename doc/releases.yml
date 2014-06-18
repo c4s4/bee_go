@@ -1,3 +1,9 @@
+- release:     0.0.4
+  date:        2014-06-??
+  description: ""
+  added:
+  - "Added go_bin_opt and go_test_opt configuration properties."
+
 - release:     0.0.3
   date:        2014-06-16
   description: "Removed lib directory"
