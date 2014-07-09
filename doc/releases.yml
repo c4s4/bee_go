@@ -1,8 +1,10 @@
 - release:     0.0.4
-  date:        2014-06-??
-  description: ""
+  date:        2014-07-09
+  description: "Debug release"
   added:
   - "Added go_bin_opt and go_test_opt configuration properties."
+  fixed:
+  - "Fixed test coverage for packages."
 
 - release:     0.0.3
   date:        2014-06-16
