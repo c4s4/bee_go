@@ -21,6 +21,7 @@
     go_args:         ""
     go_bin_opt:      ""
     go_test_opt:     ""
+    go_cov_file:     "#{go_build_dir}/coverage.out"
     # test coverage mode:
     # - set: indicates which statement was run
     # - count: counts the numbers of runs on a statement
@@ -56,15 +57,18 @@
   description: Generate coverage report
   script:
   - mkdir: :go_build_dir
-  - "go test -covermode=#{go_cover_mode} -coverprofile=#{go_build_dir}/coverage.out #{go_package}/#{name} > /dev/null"
+  - print: "Generating coverage reports..."
   - for: _dir
     in:  'Dir.glob("#{go_src_dir}/#{go_package}/#{name}/**/*").select{|f| File.directory? f}'
     do:
-    - rb: '_pkg = _dir[go_src_dir.length+1..-1]'
-    - "go test -covermode=#{go_cover_mode} -coverprofile=#{go_build_dir}/coverage.out #{_pkg} > /dev/null"
-  - "go tool cover -html=#{go_build_dir}/coverage.out -o #{go_build_dir}/coverage.html"
-  - "go tool cover -func=#{go_build_dir}/coverage.out"
-  - print: "Test coverage report generated in file '#{go_build_dir}/coverage.html'"
+    - rb: |
+        _pkg = _dir[go_src_dir.length+1..-1]
+        _name = _pkg[_pkg.rindex('/')+1..-1]
+    - "go test -covermode=#{go_cover_mode} -coverprofile=#{go_cov_file} #{_pkg} > /dev/null"
+    - "go tool cover -html=#{go_cov_file} -o #{go_build_dir}/#{_name}.html"
+  - "go test -cover #{go_package}/..."
+  - rm: :go_cov_file
+  - print: "Test coverage reports generated in directory '#{go_build_dir}'"
 
 - target:      go_doc
   description: Generate code documentation
