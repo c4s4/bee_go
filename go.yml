@@ -61,11 +61,13 @@
   - for: _dir
     in:  'Dir.glob("#{go_src_dir}/#{go_package}/#{name}/**/*").select{|f| File.directory? f}'
     do:
-    - rb: |
-        _pkg = _dir[go_src_dir.length+1..-1]
-        _name = _pkg[_pkg.rindex('/')+1..-1]
-    - "go test -covermode=#{go_cover_mode} -coverprofile=#{go_cov_file} #{_pkg} > /dev/null"
-    - "go tool cover -html=#{go_cov_file} -o #{go_build_dir}/#{_name}.html"
+    - if: 'Dir.glob("#{_dir}/*_test.go").length > 0'
+      then:
+      - rb: |
+          _pkg = _dir[go_src_dir.length+1..-1]
+          _name = _pkg[_pkg.rindex('/')+1..-1]
+      - "go test -covermode=#{go_cover_mode} -coverprofile=#{go_cov_file} #{_pkg} > /dev/null"
+      - "go tool cover -html=#{go_cov_file} -o #{go_build_dir}/#{_name}.html"
   - "go test -cover #{go_package}/..."
   - rm: :go_cov_file
   - print: "Test coverage reports generated in directory '#{go_build_dir}'"
